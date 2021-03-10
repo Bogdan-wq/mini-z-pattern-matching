@@ -51,13 +51,11 @@ const match = (x) => {
                         }
 
 
-                        if(rightName) {
-                            if(typeof(x) === rightName.toLowerCase()) {
-                                values.push({
-                                    ...baseObject,
-                                    value:x,
-                                });
-                            }
+                        if(rightName && typeof(x) === rightName.toLowerCase()) {
+                            values.push({
+                                ...baseObject,
+                                value:x,
+                            });
                         }
                     } else {
                         values.push({
