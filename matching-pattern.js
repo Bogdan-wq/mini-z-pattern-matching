@@ -1,6 +1,8 @@
 const traverse = require('@babel/traverse').default;
 const parseToAst = require('@babel/parser').parse;
 const deepEqual = require('deep-equal');
+const createNormalArray = require('./createNormalArray')
+const createNormalObject = require('./createNormalObject')
 
 
 const match = (x) => {
@@ -18,9 +20,7 @@ const match = (x) => {
                     if(right) {
                         const rightName = node.params[0].right?.name;
                         if(right.type === 'ArrayExpression') {
-                            const normalArray = right
-                                .elements
-                                .map(({ value }) => value)
+                            const normalArray = createNormalArray(right)
 
                             values.push({
                                 ...baseObject,
@@ -29,17 +29,7 @@ const match = (x) => {
                             })
 
                         } else if(right.type === 'ObjectExpression') {
-                            const normalObject = right
-                                .properties
-                                .map(({ key,value }) => {
-                                    return [key.name,value.value]
-                                })
-                                .reduce((total,current) => {
-                                    return {
-                                        ...total,
-                                        [current[0]]:current[1]
-                                    }
-                                },{})
+                            const normalObject = createNormalObject(right)
 
                             values.push({
                                 ...baseObject,
