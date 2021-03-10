@@ -22,42 +22,47 @@ const match = (x) => {
                         if(right.type === 'ArrayExpression') {
                             const normalArray = createNormalArray(right)
 
-                            values.push({
-                                ...baseObject,
-                                isValid:deepEqual(x,normalArray),
-                                value:normalArray,
-                            })
+                            if(deepEqual(x,normalArray)) {
+                                values.push({
+                                    ...baseObject,
+                                    value:normalArray,
+                                })
+                            }
 
                         } else if(right.type === 'ObjectExpression') {
                             const normalObject = createNormalObject(right)
 
-                            values.push({
-                                ...baseObject,
-                                isValid:deepEqual(x,normalObject),
-                                value:normalObject,
-                            })
-
+                            if(deepEqual(x,normalObject)) {
+                                values.push({
+                                    ...baseObject,
+                                    value:normalObject,
+                                })
+                            }
 
                         } else {
-                            values.push({
-                                ...baseObject,
-                                isValid:right.value === x,
-                                value:right.value,
-                            });
+
+                            if(right.value === x) {
+                                values.push({
+                                    ...baseObject,
+                                    value:right.value,
+                                });
+                            }
+
                         }
 
 
                         if(rightName) {
-                            values.push({
-                                ...baseObject,
-                                isValid:() => typeof(x) === rightName.toLowerCase(),
-                                value:x,
-                            });
+                            if(typeof(x) === rightName.toLowerCase()) {
+                                values.push({
+                                    ...baseObject,
+                                    value:x,
+                                });
+                            }
                         }
                     } else {
                         values.push({
                             ...baseObject,
-                            isValid:true,
+                            value:x,
                         })
                     }
                 }
@@ -65,7 +70,6 @@ const match = (x) => {
         })
 
         const expressions = values
-            .filter((obj) => obj.isValid)
             .map(obj => obj.callback(obj.value))
 
         return (expressions.length > 1 ? expressions : expressions[0]) || [];
@@ -75,5 +79,5 @@ const match = (x) => {
 console.log(match(1)(
     ((x = Number) => `Value ${x * 2}`),
     ((x = 1) => `Value ${x}8`),
-    (x) => `Normal Value`
+    (x) => `Normal Value ${x}`
 ))
